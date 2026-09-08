@@ -207,23 +207,51 @@ function guardarDiseno() {
 }
 
 /* =========================================================
-   FECHA
+   UTILIDADES Y MANEJO DE FECHA (OPTIMIZADO PARA IOS / IPHONE)
 ========================================================= */
+
+function formatearFechaISO(fecha) {
+  const year = fecha.getFullYear();
+  const month = String(fecha.getMonth() + 1).padStart(2, '0');
+  const day = String(fecha.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function obtenerProximoSabado() {
+  const hoy = new Date();
+  const diaSemana = hoy.getDay();
+  const diasHastaSabado = (6 - diaSemana + 7) % 7;
+  
+  const proximoSabado = new Date(hoy);
+  proximoSabado.setDate(hoy.getDate() + diasHastaSabado);
+  return proximoSabado;
+}
+
+function inicializarCampoFecha() {
+  if (!inputFecha.value) {
+    const proximoSabado = obtenerProximoSabado();
+    inputFecha.value = formatearFechaISO(proximoSabado);
+  }
+  validarFechaSabado(false);
+}
 
 function validarFechaSabado(mostrarAlerta = true) {
   if (!inputFecha.value) return true;
 
   const partes = inputFecha.value.split('-');
-  const fecha = new Date(partes[0], partes[1] - 1, partes[2]);
-  const dia = fecha.getDay();
+  const fechaSeleccionada = new Date(partes[0], partes[1] - 1, partes[2]);
+  const dia = fechaSeleccionada.getDay();
 
   if (dia !== CONFIG.DIA_PERMITIDO) {
     if (mostrarAlerta) {
-      alert('⚠️ Por favor selecciona un día SÁBADO.');
+      mostrarToast('⚠️ Solo se permiten días sábados.');
     }
-    inputFecha.value = '';
+
+    const proximo = obtenerProximoSabado();
+    inputFecha.value = formatearFechaISO(proximo);
+
     fechaHint.className = 'field-hint error';
-    fechaHint.innerText = '⚠️ Debes elegir un sábado.';
+    fechaHint.innerText = '⚠️ Ajustado automáticamente al próximo sábado.';
     return false;
   }
 
@@ -240,7 +268,7 @@ inputFecha.addEventListener('change', () => {
 });
 
 /* =========================================================
-   FORMATO DE FECHA
+   FORMATO DE FECHA PARA EL CANVAS
 ========================================================= */
 
 function obtenerFechaFormateada() {
@@ -291,8 +319,6 @@ function cargarDatos() {
         input.value = datos[id];
       }
     });
-
-    validarFechaSabado(false);
   } catch (error) {
     console.warn('Error al recuperar datos.', error);
   }
@@ -662,7 +688,6 @@ async function enviarWhatsApp() {
         return;
       }
 
-      /* FALLBACK */
       descargarBlob(blob, obtenerNombreArchivo());
       abrirWhatsApp(mensaje);
     },
@@ -863,9 +888,7 @@ function limpiarFormulario() {
   form.reset();
   localStorage.removeItem(CONFIG.STORAGE_DATOS);
 
-  fechaHint.className = 'field-hint';
-  fechaHint.innerText = '📅 Solo se permiten días sábados.';
-
+  inicializarCampoFecha();
   actualizarInterfazEstado();
   actualizarVistaPrevia();
   cerrarConfirmacionLimpiar();
@@ -949,5 +972,6 @@ document.addEventListener('keydown', event => {
 
 cargarTema();
 cargarDatos();
+inicializarCampoFecha();
 actualizarInterfazEstado();
 actualizarVistaPrevia();
