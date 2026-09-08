@@ -257,94 +257,66 @@
 
         <div class="field-row-2col">
 
-          <!-- HIMNO INICIAL -->
+<!-- HIMNO INICIAL -->
+<div class="field-group">
+  <label for="himnoInicial">
+    <span>🎵 Himno inicial</span>
+  </label>
 
-          <div class="field-group">
+  <div class="input-wrapper">
+    <input
+      type="text"
+      id="himnoInicial"
+      placeholder="Ej. 222 - Castillo Fuerte"
+      required>
 
-            <label for="himnoInicial">
-              <span>🎵 Himno inicial</span>
-            </label>
+    <span class="input-badge badge-required">
+      Requerido
+    </span>
+  </div>
 
-            <div class="input-wrapper">
+  <div class="coord-inputs">
+    <input
+      type="number"
+      id="himnoInicial_x"
+      value="280">
 
-              <input
-                type="number"
-                id="himnoInicial"
-                min="1"
-                max="999"
-                inputmode="numeric"
-                placeholder="222"
-                required>
+    <input
+      type="number"
+      id="himnoInicial_y"
+      value="816">
+  </div>
+</div>
+<!-- HIMNO FINAL -->
+<div class="field-group">
+  <label for="himnoFinal">
+    <span>🎵 Himno final</span>
+  </label>
 
-              <span
-                class="input-badge badge-required">
-                Requerido
-              </span>
+  <div class="input-wrapper">
+    <input
+      type="text"
+      id="himnoFinal"
+      placeholder="Ej. 333 - Grande es tu fidelidad"
+      required>
 
-            </div>
+    <span class="input-badge badge-required">
+      Requerido
+    </span>
+  </div>
 
-            <div class="coord-inputs">
+  <div class="coord-inputs">
+    <input
+      type="number"
+      id="himnoFinal_x"
+      value="280">
 
-              <input
-                type="number"
-                id="himnoInicial_x"
-                value="280">
-
-              <input
-                type="number"
-                id="himnoInicial_y"
-                value="816">
-
-            </div>
-
-          </div>
-
-
-          <!-- HIMNO FINAL -->
-
-          <div class="field-group">
-
-            <label for="himnoFinal">
-              <span>🎵 Himno final</span>
-            </label>
-
-            <div class="input-wrapper">
-
-              <input
-                type="number"
-                id="himnoFinal"
-                min="1"
-                max="999"
-                inputmode="numeric"
-                placeholder="333"
-                required>
-
-              <span
-                class="input-badge badge-required">
-                Requerido
-              </span>
-
-            </div>
-
-            <div class="coord-inputs">
-
-              <input
-                type="number"
-                id="himnoFinal_x"
-                value="280">
-
-              <input
-                type="number"
-                id="himnoFinal_y"
-                value="1380">
-
-            </div>
-
-          </div>
-
-        </div>
-
-
+    <input
+      type="number"
+      id="himnoFinal_y"
+      value="1380">
+  </div>
+</div>
         <!-- =================================================
              SECCIÓN 3
         ================================================== -->
