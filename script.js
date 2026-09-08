@@ -416,7 +416,7 @@ form.addEventListener('input', event => {
 /* =========================================================
    VALIDACIÓN
 ========================================================= */
-
+/*
 function validarCamposNumericos() {
   ['himnoInicial', 'himnoFinal'].forEach(id => {
     const input = document.getElementById(id);
@@ -433,7 +433,7 @@ function validarCamposNumericos() {
     }
   });
 }
-
+*/
 /* =========================================================
    RENDERIZADO CANVAS
 ========================================================= */
