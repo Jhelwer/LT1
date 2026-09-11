@@ -505,13 +505,6 @@ input.st-focus {
 .coord-inputs {
   display: none;
 }
-
-/* Fuerza 2 columnas siempre, incluso en pantallas pequeñas */
-.field-row-2col-fixed {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr) !important;
-  gap: 10px;
-}
 /* =========================================================
    BOTONES
 ========================================================= */
