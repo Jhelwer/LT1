@@ -506,13 +506,11 @@ input.st-focus {
   display: none;
 }
 
-/* Corrección adicional para contenedores e inputs */
-.field-group {
-  width: 100%;
-}
-
-label span {
-  white-space: nowrap; /* Evita que los títulos de los campos se rompan en varias líneas */
+/* Fuerza 2 columnas siempre, incluso en pantallas pequeñas */
+.field-row-2col-fixed {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 10px;
 }
 /* =========================================================
    BOTONES
