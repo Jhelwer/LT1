@@ -509,6 +509,14 @@ input.st-focus {
   display: none;
 }
 
+/* Corrección adicional para contenedores e inputs */
+.field-group {
+  width: 100%;
+}
+
+label span {
+  white-space: nowrap; /* Evita que los títulos de los campos se rompan en varias líneas */
+}
 /* =========================================================
    BOTONES
 ========================================================= */
