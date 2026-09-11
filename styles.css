@@ -332,13 +332,10 @@ h3 {
 /* =========================================================
    CAMPOS
 ========================================================= */
-
 .field-row-2col {
-display: grid;
-
-  /* Permite 2 columnas en PC solo si hay espacio suficiente (mínimo 220px por campo) */
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-
+  display: grid;
+  /* Forzar una sola columna vertical */
+  grid-template-columns: 1fr;
   gap: 13px;
 }
 
