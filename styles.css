@@ -334,10 +334,10 @@ h3 {
 ========================================================= */
 
 .field-row-2col {
-  display: grid;
+display: grid;
 
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+  /* Permite 2 columnas en PC solo si hay espacio suficiente (mínimo 220px por campo) */
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 
   gap: 13px;
 }
