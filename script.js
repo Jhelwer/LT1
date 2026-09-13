@@ -32,6 +32,15 @@ const camposRequeridos = Array.from(
   document.querySelectorAll('#liturgiaForm input[required]')
 );
 const designerPanel = document.getElementById('designerPanel');
+const designerBtn = document.getElementById('btnDesigner');
+const designerPreviewBtn = document.getElementById('btnDesignerPreview');
+
+/* =========================================================
+   VERIFICACIÓN DE MODO ADMINISTRADOR (?admin=true)
+========================================================= */
+
+const urlParams = new URLSearchParams(window.location.search);
+const isAdmin = urlParams.get('admin') === 'true';
 
 /* =========================================================
    PLANTILLA
@@ -221,7 +230,7 @@ function obtenerProximoSabado() {
   const hoy = new Date();
   const diaSemana = hoy.getDay();
   const diasHastaSabado = (6 - diaSemana + 7) % 7;
-  
+
   const proximoSabado = new Date(hoy);
   proximoSabado.setDate(hoy.getDate() + diasHastaSabado);
   return proximoSabado;
@@ -405,7 +414,6 @@ let renderTimeout;
 form.addEventListener('input', event => {
   if (event.target === inputFecha) return;
 
-  validarCamposNumericos();
   actualizarInterfazEstado();
   guardarDatos();
 
@@ -413,27 +421,6 @@ form.addEventListener('input', event => {
   renderTimeout = setTimeout(actualizarVistaPrevia, 50);
 });
 
-/* =========================================================
-   VALIDACIÓN
-========================================================= */
-/*
-function validarCamposNumericos() {
-  ['himnoInicial', 'himnoFinal'].forEach(id => {
-    const input = document.getElementById(id);
-    if (!input) return;
-
-    if (input.value !== '') {
-      let valor = parseInt(input.value, 10);
-      if (isNaN(valor) || valor < 1) {
-        input.value = '';
-      }
-      if (valor > 999) {
-        input.value = 999;
-      }
-    }
-  });
-}
-*/
 /* =========================================================
    RENDERIZADO CANVAS
 ========================================================= */
@@ -782,24 +769,30 @@ function validarAntesDeExportar() {
     return false;
   }
 
-  validarCamposNumericos();
   return true;
 }
 
 /* =========================================================
-   DISEÑADOR
+   DISEÑADOR (SOLO ADMIN)
 ========================================================= */
 
 function abrirDiseñador() {
-  designerPanel.classList.toggle('active');
+  if (!isAdmin) return;
 
-  if (designerPanel.classList.contains('active')) {
-    cargarControlesDiseño();
+  if (designerPanel) {
+    designerPanel.classList.toggle('active');
+
+    if (designerPanel.classList.contains('active')) {
+      cargarControlesDiseño();
+    }
   }
 }
 
 function cargarControlesDiseño() {
-  const id = document.getElementById('designerField').value;
+  const fieldSelect = document.getElementById('designerField');
+  if (!fieldSelect) return;
+
+  const id = fieldSelect.value;
   const config = diseno[id];
 
   if (!config) return;
@@ -811,7 +804,10 @@ function cargarControlesDiseño() {
 }
 
 function aplicarControlesDiseño() {
-  const id = document.getElementById('designerField').value;
+  const fieldSelect = document.getElementById('designerField');
+  if (!fieldSelect) return;
+
+  const id = fieldSelect.value;
   const config = diseno[id];
 
   if (!config) return;
@@ -824,18 +820,51 @@ function aplicarControlesDiseño() {
   actualizarVistaPrevia();
 }
 
-document
-  .getElementById('designerField')
-  .addEventListener('change', cargarControlesDiseño);
+if (isAdmin) {
+  const designerField = document.getElementById('designerField');
+  if (designerField) {
+    designerField.addEventListener('change', cargarControlesDiseño);
+  }
 
-['designX', 'designY', 'designFontSize', 'designAlign'].forEach(id => {
-  document
-    .getElementById(id)
-    .addEventListener('input', aplicarControlesDiseño);
-});
+  ['designX', 'designY', 'designFontSize', 'designAlign'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', aplicarControlesDiseño);
+    }
+  });
+
+  const btnMoveUp = document.getElementById('btnMoveUp');
+  const btnMoveDown = document.getElementById('btnMoveDown');
+  const btnMoveLeft = document.getElementById('btnMoveLeft');
+  const btnMoveRight = document.getElementById('btnMoveRight');
+  const btnSaveDesign = document.getElementById('btnSaveDesign');
+  const btnResetDesign = document.getElementById('btnResetDesign');
+
+  if (btnMoveUp) btnMoveUp.onclick = () => moverElemento(0, -CONFIG.MOVIMIENTO);
+  if (btnMoveDown) btnMoveDown.onclick = () => moverElemento(0, CONFIG.MOVIMIENTO);
+  if (btnMoveLeft) btnMoveLeft.onclick = () => moverElemento(-CONFIG.MOVIMIENTO, 0);
+  if (btnMoveRight) btnMoveRight.onclick = () => moverElemento(CONFIG.MOVIMIENTO, 0);
+  if (btnSaveDesign) btnSaveDesign.onclick = guardarDiseno;
+
+  if (btnResetDesign) {
+    btnResetDesign.onclick = () => {
+      if (!confirm('¿Restablecer todas las posiciones originales?')) {
+        return;
+      }
+
+      diseno = clonarObjeto(DISENO_DEFAULT);
+      cargarControlesDiseño();
+      actualizarVistaPrevia();
+      guardarDiseno();
+    };
+  }
+}
 
 function moverElemento(dx, dy) {
-  const id = document.getElementById('designerField').value;
+  const fieldSelect = document.getElementById('designerField');
+  if (!fieldSelect) return;
+
+  const id = fieldSelect.value;
   const config = diseno[id];
 
   if (!config) return;
@@ -846,31 +875,6 @@ function moverElemento(dx, dy) {
   cargarControlesDiseño();
   actualizarVistaPrevia();
 }
-
-document.getElementById('btnMoveUp').onclick = () =>
-  moverElemento(0, -CONFIG.MOVIMIENTO);
-
-document.getElementById('btnMoveDown').onclick = () =>
-  moverElemento(0, CONFIG.MOVIMIENTO);
-
-document.getElementById('btnMoveLeft').onclick = () =>
-  moverElemento(-CONFIG.MOVIMIENTO, 0);
-
-document.getElementById('btnMoveRight').onclick = () =>
-  moverElemento(CONFIG.MOVIMIENTO, 0);
-
-document.getElementById('btnSaveDesign').onclick = guardarDiseno;
-
-document.getElementById('btnResetDesign').onclick = () => {
-  if (!confirm('¿Restablecer todas las posiciones originales?')) {
-    return;
-  }
-
-  diseno = clonarObjeto(DISENO_DEFAULT);
-  cargarControlesDiseño();
-  actualizarVistaPrevia();
-  guardarDiseno();
-};
 
 /* =========================================================
    LIMPIAR FORMULARIO
@@ -945,7 +949,7 @@ function mostrarToast(mensaje) {
 }
 
 /* =========================================================
-   EVENTOS BOTONES
+   EVENTOS BOTONES PRINCIPALES Y ACTIVACIÓN MODO ADMIN
 ========================================================= */
 
 btnExportar.onclick = exportarJPG;
@@ -953,8 +957,23 @@ btnWhatsapp.onclick = enviarWhatsApp;
 btnMobileShare.onclick = enviarWhatsApp;
 
 document.getElementById('btnCopiar').onclick = copiarTexto;
-document.getElementById('btnDesigner').onclick = abrirDiseñador;
-document.getElementById('btnDesignerPreview').onclick = abrirDiseñador;
+
+// Mostrar botones del diseñador solo en modo Administrador (?admin=true)
+document.addEventListener('DOMContentLoaded', () => {
+  if (isAdmin) {
+    if (designerBtn) {
+      designerBtn.style.display = 'inline-flex';
+      designerBtn.onclick = abrirDiseñador;
+    }
+    if (designerPreviewBtn) {
+      designerPreviewBtn.style.display = 'inline-flex';
+      designerPreviewBtn.onclick = abrirDiseñador;
+    }
+  } else {
+    if (designerBtn) designerBtn.style.display = 'none';
+    if (designerPreviewBtn) designerPreviewBtn.style.display = 'none';
+  }
+});
 
 /* =========================================================
    ATAJOS DE TECLADO
