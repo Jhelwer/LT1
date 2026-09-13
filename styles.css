@@ -298,7 +298,7 @@ h3 {
 
   padding: 11px 14px;
 
-  border-radius: 9px;
+  border-radius: 99px;
 
   font-size: 13px;
   font-weight: 800;
@@ -311,6 +311,10 @@ h3 {
   border-left:
     4px solid
     var(--primary);
+}
+
+body.dark .section-title {
+  color: #60a5fa;
 }
 
 .section-number {
@@ -505,6 +509,7 @@ input.st-focus {
 .coord-inputs {
   display: none;
 }
+
 /* =========================================================
    BOTONES
 ========================================================= */
@@ -575,7 +580,9 @@ button:disabled {
   color: #334155;
 }
 
+/* Ocultar botón de diseñador por defecto */
 .btn-designer {
+  display: none;
   background: var(--primary);
   color: white;
 }
