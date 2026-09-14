@@ -576,8 +576,8 @@ button:disabled {
 }
 
 .btn-icon {
-  width: 10px;  /* Ajusta el tamaño según tu diseño */
-  height: 10px;
+  width: 20px;  /* Ajusta el tamaño según tu diseño */
+  height: 20px;
   object-fit: contain;
 }
 
