@@ -575,6 +575,12 @@ button:disabled {
   color: white;
 }
 
+.btn-icon {
+  width: 20px;  /* Ajusta el tamaño según tu diseño */
+  height: 20px;
+  object-fit: contain;
+}
+
 .btn-reset {
   background: #e2e8f0;
   color: #334155;
