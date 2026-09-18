@@ -227,7 +227,7 @@ h3 {
 .progress-container {
   position: sticky;
 
-  top: -25px;
+  top: 0px;
 
   background: var(--card);
 
@@ -237,7 +237,7 @@ h3 {
     12px;
 
   margin:
-    -25px
+    0px
     0
     20px;
 
