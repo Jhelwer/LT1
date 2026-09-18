@@ -914,6 +914,8 @@ function inicializarTema() {
   
   if (savedTheme === 'dark') {
     document.body.classList.add('dark');
+  } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.body.classList.add('dark');
   }
 
   const themeToggleBtn = document.getElementById('theme-toggle') || document.getElementById('btnTheme');
@@ -927,7 +929,6 @@ function inicializarTema() {
     });
   }
 }
-
 /* =========================================================
    TOAST
 ========================================================= */
