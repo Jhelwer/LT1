@@ -906,29 +906,25 @@ document.getElementById('btnCancelClear').onclick = cerrarConfirmacionLimpiar;
 document.getElementById('btnConfirmClear').onclick = limpiarFormulario;
 
 /* =========================================================
-   TEMA (SOPORTE BOTÓN ANIMADO .theme-toggle)
+   TEMA
 ========================================================= */
 
-function inicializarTema() {
-  const savedTheme = localStorage.getItem(CONFIG.STORAGE_TEMA);
-  
-  if (savedTheme === 'dark') {
-    document.body.classList.add('dark');
-  } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.body.classList.add('dark');
-  }
+function cargarTema() {
+  const tema = localStorage.getItem(CONFIG.STORAGE_TEMA);
 
-  const themeToggleBtn = document.getElementById('theme-toggle') || document.getElementById('btnTheme');
-
-  if (themeToggleBtn) {
-    themeToggleBtn.addEventListener('click', () => {
-      document.body.classList.toggle('dark');
-      const esOscuro = document.body.classList.contains('dark');
-      
-      localStorage.setItem(CONFIG.STORAGE_TEMA, esOscuro ? 'dark' : 'light');
-    });
+  if (tema === 'dark') {
+    document.body.classList.add('dark');
+    document.getElementById('btnTheme').innerText = '✨';
   }
 }
+
+document.getElementById('btnTheme').onclick = () => {
+  document.body.classList.toggle('dark');
+  const oscuro = document.body.classList.contains('dark');
+
+  localStorage.setItem(CONFIG.STORAGE_TEMA, oscuro ? 'dark' : 'light');
+  document.getElementById('btnTheme').innerText = oscuro ? '✨' : '🌙';
+};
 
 /* =========================================================
    TOAST
@@ -993,7 +989,7 @@ document.addEventListener('keydown', event => {
    INICIALIZACIÓN
 ========================================================= */
 
-inicializarTema();
+cargarTema();
 cargarDatos();
 inicializarCampoFecha();
 actualizarInterfazEstado();

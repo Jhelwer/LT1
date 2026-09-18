@@ -194,75 +194,30 @@ h3 {
   gap: 7px;
 }
 
-/* =========================================================
-   BOTÓN ANIMADO DÍA / NOCHE (.theme-toggle)
-========================================================= */
+.icon-button {
+  width: 40px;
+  height: 40px;
 
-.theme-toggle {
-  position: relative;
-  width: 60px;
-  height: 32px;
-  border-radius: 99px;
-  background-color: #cbd5e1;
-  border: 2px solid var(--border);
-  padding: 2px;
-  cursor: pointer;
-  outline: none;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-  min-height: auto;
-}
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
 
-.theme-toggle-thumb {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background-color: #ffffff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+
+  cursor: pointer;
+
+  font-size: 18px;
+
+  transition: 0.2s;
 }
 
-.theme-icon {
-  position: absolute;
-  font-size: 13px;
-  user-select: none;
-  transition: opacity 0.25s ease, transform 0.25s ease;
-}
-
-.icon-sun {
-  opacity: 1;
-  transform: scale(1) rotate(0deg);
-}
-
-.icon-moon {
-  opacity: 0;
-  transform: scale(0.5) rotate(-90deg);
-}
-
-/* Estado Oscuro Activo */
-body.dark .theme-toggle {
-  background-color: #334155;
-  border-color: #475569;
-}
-
-body.dark .theme-toggle-thumb {
-  transform: translateX(28px);
-  background-color: #0f172a;
-}
-
-body.dark .icon-sun {
-  opacity: 0;
-  transform: scale(0.5) rotate(90deg);
-}
-
-body.dark .icon-moon {
-  opacity: 1;
-  transform: scale(1) rotate(0deg);
+.icon-button:hover {
+  transform: translateY(-1px);
+  border-color: var(--secondary);
 }
 
 /* =========================================================
@@ -383,6 +338,7 @@ body.dark .section-title {
 ========================================================= */
 .field-row-2col {
   display: grid;
+  /* Forzar una sola columna vertical */
   grid-template-columns: 1fr;
   gap: 13px;
 }
@@ -620,7 +576,7 @@ button:disabled {
 }
 
 .btn-icon {
-  width: 25px;
+  width: 25px;  /* Ajusta el tamaño según tu diseño */
   height: 25px;
   object-fit: contain;
 }
