@@ -191,6 +191,7 @@ h3 {
 
 .header-actions {
   display: flex;
+  align-items: center;
   gap: 7px;
 }
 
@@ -218,6 +219,81 @@ h3 {
 .icon-button:hover {
   transform: translateY(-1px);
   border-color: var(--secondary);
+}
+
+/* =========================================================
+   BOTÓN ANIMADO DÍA / NOCHE
+========================================================= */
+
+.theme-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+}
+
+.toggle-track {
+  width: 56px;
+  height: 30px;
+  background-color: #cbd5e1;
+  border-radius: 99px;
+  padding: 3px;
+  position: relative;
+  transition: background-color 0.35s ease;
+}
+
+body.dark .toggle-track {
+  background-color: #334155;
+}
+
+.toggle-thumb {
+  width: 24px;
+  height: 24px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.35s ease;
+  position: relative;
+}
+
+body.dark .toggle-thumb {
+  transform: translateX(26px);
+  background-color: #0f172a;
+}
+
+.toggle-thumb .icon {
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  transition: opacity 0.3s ease, transform 0.35s ease;
+}
+
+/* Estado Modo Claro: Muestra Sol, Oculta Luna */
+.toggle-thumb .sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+  color: #f59e0b;
+}
+
+.toggle-thumb .moon {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.5);
+  color: #38bdf8;
+}
+
+/* Estado Modo Oscuro: Oculta Sol, Muestra Luna */
+body.dark .toggle-thumb .sun {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.5);
+}
+
+body.dark .toggle-thumb .moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
 }
 
 /* =========================================================
