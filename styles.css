@@ -1110,30 +1110,3 @@ body.dark .preview-empty {
     grid-template-columns: 1fr;
   }
 }
-/* -------------------------------------------
-      texto superpuesto
----------------------------------------------- */
-.overlay-texto {
-    position: fixed; /* Se superpone a toda la pantalla */
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999; /* Asegura que quede por encima de todo */
-    
-    /* Fondo semi-transparente con efecto desenfocado */
-    background: rgba(0, 0, 0, 0.4); /* Cambia el color o la opacidad si lo prefieres */
-    backdrop-filter: blur(8px); /* Ajusta los píxeles de desenfoque aquí */
-    -webkit-backdrop-filter: blur(8px); /* Compatible con Safari */
-}
-
-.overlay-texto h1 {
-    color: #ffffff;
-    font-size: 3rem;
-    font-family: sans-serif;
-    text-align: center;
-    padding: 20px;
-}
