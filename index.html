@@ -65,18 +65,16 @@
 
         <div class="header-actions">
 
-          <!-- Botón de cambio de tema integrado -->
-          <!-- Busca donde tienes el toggle y reemplázalo por esto -->
-          <button class="theme-toggle-btn" id="theme-toggle" aria-label="Alternar modo oscuro">
-            <div class="theme-toggle-slot">
-              <div class="theme-toggle-thumb">
-                <!-- Icono del Sol -->
-                <svg class="sun-icon" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="5"></circle>
-                  <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
-                </svg>
-              </div>
-            </div>
+          <!-- Botón Animado Modo Día / Noche -->
+          <button
+            class="theme-toggle"
+            id="theme-toggle"
+            aria-label="Cambiar tema"
+            type="button">
+            <span class="theme-toggle-thumb">
+              <span class="theme-icon icon-sun">☀️</span>
+              <span class="theme-icon icon-moon">🌙</span>
+            </span>
           </button>
 
         </div>
@@ -259,7 +257,6 @@
             </div>
 
           </div>
-
         </div>
 
         <!-- =================================================
@@ -391,7 +388,6 @@
                 value="1380">
             </div>
           </div>
-
         </div>
 
         <!-- =================================================
@@ -1043,7 +1039,7 @@
       🗑️ Limpiar
 
     </button>
-
+   
     <button
       id="btnMobileShare"
       class="btn-whatsapp"
@@ -1092,7 +1088,6 @@
     class="toast-container"
     id="toastContainer">
   </div>
-
   <!-- Archivo de JavaScript externo -->
   <script src="script.js"></script>
 
