@@ -1124,3 +1124,16 @@ input.st-error-flash {
   background-color: var(--danger-bg) !important;
   color: var(--danger) !important;
 }
+
+/* ============================================ 
+Animación de destello al limpiar el formulario 
+=============================================== */
+@keyframes limpiarFlash {
+  0% { background-color: var(--primary-light, rgba(79, 70, 229, 0.2)); transform: scale(0.99); }
+  100% { background-color: var(--card); transform: scale(1); }
+}
+
+.st-clear-flash {
+  animation: limpiarFlash 0.4s ease;
+}
+/* ============================================ */
