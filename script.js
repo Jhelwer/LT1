@@ -12,6 +12,26 @@ const CONFIG = {
   MOVIMIENTO: 5
 };
 
+
+// ==========================================
+// CONFIGURACIÓN DE VERSIÓN GLOBAL
+// ==========================================
+const CONFIG_VERSION = "2.2"; // <-- ¡Solo cambias la versión aquí en adelante!
+
+function aplicarVersionGlobal() {
+  // Buscamos todos los elementos que tengan el id o clase de versión
+  const elementosVersion = document.querySelectorAll('#app-version, #app-version-footer');
+  
+  elementosVersion.forEach(el => {
+    el.textContent = `v${CONFIG_VERSION}`;
+  });
+}
+
+// Ejecutar al cargar la página
+document.addEventListener('DOMContentLoaded', () => {
+  aplicarVersionGlobal();
+});
+
 /* =========================================================
    REFERENCIAS
 ========================================================= */
