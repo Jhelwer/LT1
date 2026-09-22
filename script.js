@@ -923,23 +923,24 @@ function cerrarConfirmacionLimpiar() {
 }
 
 function limpiarFormulario() {
-  // 1. Limpiamos los datos y actualizamos la interfaz de inmediato
-  form.reset();
-  localStorage.removeItem(CONFIG.STORAGE_DATOS);
-  inicializarCampoFecha();
-  actualizarInterfazEstado();
-  actualizarVistaPrevia();
-
-  // 2. Aplicamos la animación elegante de desvanecimiento a todos los campos en paralelo
+  // Seleccionamos todos los campos del formulario para animarlos
   const campos = form.querySelectorAll('input, select, textarea');
+  
   campos.forEach(campo => {
     campo.classList.add('st-clear-flash');
     setTimeout(() => {
       campo.classList.remove('st-clear-flash');
-    }, 250); // Sincronizado con los 0.25s de la animación CSS
+    }, 400); // Duración sincronizada con la animación CSS
   });
 
+  form.reset();
+  localStorage.removeItem(CONFIG.STORAGE_DATOS);
+
+  inicializarCampoFecha();
+  actualizarInterfazEstado();
+  actualizarVistaPrevia();
   cerrarConfirmacionLimpiar();
+
   mostrarToast('🗑️ Formulario limpio');
 }
 
@@ -947,7 +948,6 @@ document.getElementById('btnLimpiar').onclick = abrirConfirmacionLimpiar;
 document.getElementById('btnMobileClear').onclick = abrirConfirmacionLimpiar;
 document.getElementById('btnCancelClear').onclick = cerrarConfirmacionLimpiar;
 document.getElementById('btnConfirmClear').onclick = limpiarFormulario;
-
 /* =========================================================
    TEMA (SOPORTE BOTÓN ANIMADO .theme-toggle)
 ========================================================= */
