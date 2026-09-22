@@ -923,28 +923,21 @@ function cerrarConfirmacionLimpiar() {
 }
 
 function limpiarFormulario() {
+  // 1. Limpiamos los datos y actualizamos la interfaz de inmediato
+  form.reset();
+  localStorage.removeItem(CONFIG.STORAGE_DATOS);
+  inicializarCampoFecha();
+  actualizarInterfazEstado();
+  actualizarVistaPrevia();
+
+  // 2. Aplicamos la animación elegante de desvanecimiento a todos los campos en paralelo
   const campos = form.querySelectorAll('input, select, textarea');
-  
-  // 1. Primero disparamos la animación en cascada visualmente
-  campos.forEach((campo, index) => {
+  campos.forEach(campo => {
+    campo.classList.add('st-clear-flash');
     setTimeout(() => {
-      campo.classList.add('st-clear-flash');
-      
-      setTimeout(() => {
-        campo.classList.remove('st-clear-flash');
-      }, 450);
-    }, index * 80); // Subimos a 80ms para que el retraso entre campo y campo sea muy notorio
+      campo.classList.remove('st-clear-flash');
+    }, 250); // Sincronizado con los 0.25s de la animación CSS
   });
-
-  // 2. Limpiamos los datos a mitad de la animación para que coincida con el efecto visual
-  setTimeout(() => {
-    form.reset();
-    localStorage.removeItem(CONFIG.STORAGE_DATOS);
-
-    inicializarCampoFecha();
-    actualizarInterfazEstado();
-    actualizarVistaPrevia();
-  }, 200); // Se ejecuta a los 200ms, cuando la cascada va por la mitad
 
   cerrarConfirmacionLimpiar();
   mostrarToast('🗑️ Formulario limpio');
