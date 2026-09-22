@@ -256,17 +256,25 @@ function validarFechaSabado(mostrarAlerta = true) {
       mostrarToast('⚠️ Solo se permiten días sábados.');
     }
 
-    // Resaltar visualmente el campo con error de forma temporal
+    // Activar clase de error visual
     inputFecha.classList.add('st-error-flash');
-    setTimeout(() => {
-      inputFecha.classList.remove('st-error-flash');
-    }, 2000);
-
-    const proximo = obtenerProximoSabado();
-    inputFecha.value = formatearFechaISO(proximo);
-
+    
     fechaHint.className = 'field-hint error';
-    fechaHint.innerText = '⚠️ Ajustado automáticamente al próximo sábado.';
+    fechaHint.innerText = '⚠️ Día no permitido. Debe ser sábado.';
+
+    // Retardar ligeramente la corrección automática para que el usuario note el error en el input
+    setTimeout(() => {
+      const proximo = obtenerProximoSabado();
+      inputFecha.value = formatearFechaISO(proximo);
+      
+      inputFecha.classList.remove('st-error-flash');
+      fechaHint.className = 'field-hint';
+      fechaHint.innerText = '📅 Ajustado automáticamente al próximo sábado.';
+      
+      actualizarInterfazEstado();
+      actualizarVistaPrevia();
+    }, 1200);
+
     return false;
   }
 
