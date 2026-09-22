@@ -83,6 +83,28 @@ input {
 button {
   -webkit-tap-highlight-color: transparent;
 }
+/* =========================================================
+   SELECTOR DE PLANTILLA
+========================================================= */
+.template-selector-group {
+  background: var(--secondary-light, #f8fafc);
+  border: 2px dashed var(--border, #cbd5e1);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 20px;
+}
+
+.template-select {
+  width: 100%;
+  height: 42px;
+  border: 1px solid var(--border, #cbd5e1);
+  border-radius: 6px;
+  background: var(--card, #ffffff);
+  color: var(--text, #1e293b);
+  padding: 0 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
 
 /* =========================================================
    CONTENEDOR PRINCIPAL
