@@ -925,24 +925,28 @@ function cerrarConfirmacionLimpiar() {
 function limpiarFormulario() {
   const campos = form.querySelectorAll('input, select, textarea');
   
-  // Recorremos los campos aplicando el efecto en cascada
+  // 1. Primero disparamos la animación en cascada visualmente
   campos.forEach((campo, index) => {
     setTimeout(() => {
       campo.classList.add('st-clear-flash');
+      
       setTimeout(() => {
         campo.classList.remove('st-clear-flash');
-      }, 450); // Sincronizado con la duración de la animación CSS
-    }, index * 45); // 45ms de retraso por cada campo sucesivo
+      }, 450);
+    }, index * 80); // Subimos a 80ms para que el retraso entre campo y campo sea muy notorio
   });
 
-  form.reset();
-  localStorage.removeItem(CONFIG.STORAGE_DATOS);
+  // 2. Limpiamos los datos a mitad de la animación para que coincida con el efecto visual
+  setTimeout(() => {
+    form.reset();
+    localStorage.removeItem(CONFIG.STORAGE_DATOS);
 
-  inicializarCampoFecha();
-  actualizarInterfazEstado();
-  actualizarVistaPrevia();
+    inicializarCampoFecha();
+    actualizarInterfazEstado();
+    actualizarVistaPrevia();
+  }, 200); // Se ejecuta a los 200ms, cuando la cascada va por la mitad
+
   cerrarConfirmacionLimpiar();
-
   mostrarToast('🗑️ Formulario limpio');
 }
 
