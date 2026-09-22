@@ -256,6 +256,12 @@ function validarFechaSabado(mostrarAlerta = true) {
       mostrarToast('⚠️ Solo se permiten días sábados.');
     }
 
+    // Resaltar visualmente el campo con error de forma temporal
+    inputFecha.classList.add('st-error-flash');
+    setTimeout(() => {
+      inputFecha.classList.remove('st-error-flash');
+    }, 2000);
+
     const proximo = obtenerProximoSabado();
     inputFecha.value = formatearFechaISO(proximo);
 
