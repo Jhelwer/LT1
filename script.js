@@ -12,6 +12,80 @@ const CONFIG = {
   MOVIMIENTO: 5
 };
 
+/* =========================================================
+   CONFIGURACIÓN DE MULTIPLANTILLAS
+========================================================= */
+const CONFIGURACIONES_PLANTILLAS = {
+  liturgia: {
+    nombre: "Culto Divino",
+    archivoImg: "CULTO DE.png", // Tu imagen principal actual
+    diaPermitido: 6, // Sábado
+    diseno: {
+      fecha: { x: 696, y: 488, fontSize: 22, weight: 'bold', color: '#1e3a8a', align: 'center' },
+      predicador: { x: 260, y: 1532, fontSize: 22, weight: 'bold', color: '#0f172a', align: 'left' },
+      lectura: { x: 293, y: 761, fontSize: 20, weight: 'normal', italic: true, color: '#1e40af', align: 'left' },
+      himnoInicial: { x: 280, y: 816, fontSize: 22, weight: 'bold', color: '#0f172a', align: 'left' },
+      himnoFinal: { x: 280, y: 1380, fontSize: 22, weight: 'bold', color: '#0f172a', align: 'left' }
+    }
+  },
+  escuelaSabatica: {
+    nombre: "Escuela Sabática",
+    archivoImg: "CULTO DE.png", // Usa temporalmente la misma imagen mientras creas la definitiva
+    diaPermitido: 6,
+    diseno: {
+      fecha: { x: 696, y: 488, fontSize: 22, weight: 'bold', color: '#1e3a8a', align: 'center' },
+      predicador: { x: 260, y: 1532, fontSize: 22, weight: 'bold', color: '#0f172a', align: 'left' }
+    }
+  },
+  cultoJoven: {
+    nombre: "Culto Joven",
+    archivoImg: "CULTO DE.png",
+    diaPermitido: 6,
+    diseno: {
+      fecha: { x: 696, y: 488, fontSize: 22, weight: 'bold', color: '#1e3a8a', align: 'center' }
+    }
+  },
+  miercolesOracion: {
+    nombre: "Miércoles de Oración",
+    archivoImg: "CULTO DE.png",
+    diaPermitido: 3, // Miércoles
+    diseno: {
+      fecha: { x: 696, y: 488, fontSize: 22, weight: 'bold', color: '#1e3a8a', align: 'center' }
+    }
+  },
+  santaCena: {
+    nombre: "Santa Cena",
+    archivoImg: "CULTO DE.png",
+    diaPermitido: 6,
+    diseno: {
+      fecha: { x: 696, y: 488, fontSize: 22, weight: 'bold', color: '#1e3a8a', align: 'center' }
+    }
+  }
+};
+
+let tipoActual = 'liturgia';
+let configActiva = CONFIGURACIONES_PLANTILLAS[tipoActual];
+
+// Escuchar cambios en el selector
+const selectTipo = document.getElementById('tipoPlantilla');
+if (selectTipo) {
+  selectTipo.addEventListener('change', (e) => {
+    tipoActual = e.target.value;
+    configActiva = CONFIGURACIONES_PLANTILLAS[tipoActual];
+    
+    // Cambiar la fuente de la imagen del canvas
+    if (typeof plantilla !== 'undefined') {
+      plantilla.src = configActiva.archivoImg;
+    }
+    
+    // Refrescar la vista previa si tu función existe
+    if (typeof actualizarVistaPrevia === 'function') {
+      actualizarVistaPrevia();
+    }
+    
+    console.log(`Cambiado a plantilla: ${configActiva.nombre}`);
+  });
+}
 
 // ==========================================
 // CONFIGURACIÓN DE VERSIÓN GLOBAL
