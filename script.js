@@ -923,14 +923,16 @@ function cerrarConfirmacionLimpiar() {
 }
 
 function limpiarFormulario() {
-  // Seleccionamos todos los campos del formulario para animarlos
   const campos = form.querySelectorAll('input, select, textarea');
   
-  campos.forEach(campo => {
-    campo.classList.add('st-clear-flash');
+  // Recorremos los campos aplicando el efecto en cascada
+  campos.forEach((campo, index) => {
     setTimeout(() => {
-      campo.classList.remove('st-clear-flash');
-    }, 400); // Duración sincronizada con la animación CSS
+      campo.classList.add('st-clear-flash');
+      setTimeout(() => {
+        campo.classList.remove('st-clear-flash');
+      }, 450); // Sincronizado con la duración de la animación CSS
+    }, index * 45); // 45ms de retraso por cada campo sucesivo
   });
 
   form.reset();
