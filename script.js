@@ -12,7 +12,7 @@ const CONFIG = {
 // ==========================================
 // CONFIGURACIÓN DE VERSIÓN GLOBAL
 // ==========================================
-const CONFIG_VERSION = "2.2";
+const CONFIG_VERSION = "3.0.0"; // Actualiza esta versión según sea necesario
 
 function aplicarVersionGlobal() {
   const elementosVersion = document.querySelectorAll('#app-version, #app-version-footer');
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* =========================================================
-   REFERENCIAS
+   REFERENCIAS DEL DOM
 ========================================================= */
 
 const canvas = document.getElementById('canvasLiturgia');
@@ -70,14 +70,56 @@ plantilla.onerror = () => {
 };
 
 plantilla.src = CONFIG.PLANTILLA_PRINCIPAL;
+
 /* =========================================================
-   DISEÑO ORIGINAL (Escalado 2x para 1728x3642)
+   MAPEO DINÁMICO DE ACOMPAÑANTES Y ROLES (2, 3, 4 Y 5)
+========================================================= */
+
+const ROLES_COORDS = {
+  bienvenidaLectura: { x: 1108, y: 1446 },
+  himnoInicial:      { x: 1108, y: 1564 },
+  oracionInicial:    { x: 1108, y: 1696 },
+  adoracionInfantil: { x: 1108, y: 1902 },
+  diezmosOfrendas:   { x: 1108, y: 2120 },
+  mensajeMusical:    { x: 1108, y: 2378 },
+  anunciaPredicador: { x: 1108, y: 2530 },
+  himnoFinal:        { x: 1108, y: 2686 },
+  oracionFinal:      { x: 1108, y: 2785 }
+};
+
+const DISTRIBUCION_ROLES = {
+  2: {
+    1: ['bienvenidaLectura', 'himnoInicial', 'diezmosOfrendas', 'anunciaPredicador', 'oracionFinal'],
+    2: ['oracionInicial', 'adoracionInfantil', 'mensajeMusical', 'himnoFinal']
+  },
+  3: {
+    1: ['bienvenidaLectura', 'himnoInicial', 'oracionFinal'],
+    2: ['oracionInicial', 'adoracionInfantil', 'anunciaPredicador'],
+    3: ['diezmosOfrendas', 'mensajeMusical', 'himnoFinal']
+  },
+  4: {
+    1: ['bienvenidaLectura', 'himnoInicial'],
+    2: ['oracionInicial', 'adoracionInfantil', 'himnoFinal'],
+    3: ['diezmosOfrendas', 'mensajeMusical'],
+    4: ['anunciaPredicador', 'oracionFinal']
+  },
+  5: {
+    1: ['bienvenidaLectura'],
+    2: ['himnoInicial', 'oracionFinal'],
+    3: ['oracionInicial', 'himnoFinal'],
+    4: ['adoracionInfantil', 'diezmosOfrendas'],
+    5: ['mensajeMusical', 'anunciaPredicador']
+  }
+};
+
+/* =========================================================
+   DISEÑO BASE (1728x3642)
 ========================================================= */
 
 const DISENO_DEFAULT = {
   fecha: {
     x: 1392,
-    y: 976,
+    y: 906,
     fontSize: 44,
     weight: 'bold',
     color: '#1e3a8a',
@@ -85,9 +127,9 @@ const DISENO_DEFAULT = {
   },
   predicador: {
     x: 520,
-    y: 3064,
+    y: 2994,
     x2: 1108,
-    y2: 2672,
+    y2: 2592,
     fontSize: 44,
     weight: 'bold',
     color: '#0f172a',
@@ -95,7 +137,7 @@ const DISENO_DEFAULT = {
   },
   lectura: {
     x: 586,
-    y: 1522,
+    y: 1452,
     fontSize: 40,
     weight: 'normal',
     italic: true,
@@ -104,7 +146,7 @@ const DISENO_DEFAULT = {
   },
   himnoInicial: {
     x: 560,
-    y: 1632,
+    y: 1562,
     fontSize: 44,
     weight: 'bold',
     color: '#0f172a',
@@ -112,25 +154,16 @@ const DISENO_DEFAULT = {
   },
   himnoFinal: {
     x: 560,
-    y: 2760,
+    y: 2690,
     fontSize: 44,
     weight: 'bold',
     color: '#0f172a',
     align: 'left'
   },
+  // Coordenadas para la lista inferior de la plataforma (Acompañantes 1 al 5)
   acompanante1: {
     x: 600,
-    y: 3120,
-    x2: 1108,
-    y2: 1516,
-    x3: 1108,
-    y3: 1624,
-    x4: 1108,
-    y4: 2600,
-    x5: 1108,
-    y5: 2852,
-    x6: 1108,
-    y6: 2200,
+    y: 3050,
     fontSize: 40,
     weight: 'bold',
     color: '#0f172a',
@@ -138,15 +171,31 @@ const DISENO_DEFAULT = {
   },
   acompanante2: {
     x: 600,
-    y: 3174,
-    x2: 1108,
-    y2: 1766,
-    x3: 1108,
-    y3: 1982,
-    x4: 1108,
-    y4: 2448,
-    x5: 1108,
-    y5: 2756,
+    y: 3104,
+    fontSize: 40,
+    weight: 'bold',
+    color: '#0f172a',
+    align: 'left'
+  },
+  acompanante3: {
+    x: 600,
+    y: 3158,
+    fontSize: 40,
+    weight: 'bold',
+    color: '#0f172a',
+    align: 'left'
+  },
+  acompanante4: {
+    x: 600,
+    y: 3212,
+    fontSize: 40,
+    weight: 'bold',
+    color: '#0f172a',
+    align: 'left'
+  },
+  acompanante5: {
+    x: 600,
+    y: 3266,
     fontSize: 40,
     weight: 'bold',
     color: '#0f172a',
@@ -154,7 +203,7 @@ const DISENO_DEFAULT = {
   },
   familiaOracion: {
     x: 1108,
-    y: 1860,
+    y: 1770,
     fontSize: 40,
     weight: 'normal',
     color: '#15803d',
@@ -162,7 +211,7 @@ const DISENO_DEFAULT = {
   },
   adoracionInfantil: {
     x: 1108,
-    y: 2038,
+    y: 1968,
     fontSize: 40,
     weight: 'normal',
     color: '#15803d',
@@ -170,7 +219,7 @@ const DISENO_DEFAULT = {
   },
   mensajeMusical: {
     x: 1108,
-    y: 2516,
+    y: 2436,
     fontSize: 40,
     weight: 'normal',
     color: '#15803d',
@@ -222,16 +271,20 @@ function validarFechaSabado(mostrarAlerta = true) {
     }
 
     inputFecha.classList.add('st-error-flash');
-    fechaHint.className = 'field-hint error';
-    fechaHint.innerText = '⚠️ Día no permitido. Debe ser sábado.';
+    if (fechaHint) {
+      fechaHint.className = 'field-hint error';
+      fechaHint.innerText = '⚠️ Día no permitido. Debe ser sábado.';
+    }
 
     setTimeout(() => {
       const proximo = obtenerProximoSabado();
       inputFecha.value = formatearFechaISO(proximo);
       
       inputFecha.classList.remove('st-error-flash');
-      fechaHint.className = 'field-hint';
-      fechaHint.innerText = '📅 Ajustado automáticamente al próximo sábado.';
+      if (fechaHint) {
+        fechaHint.className = 'field-hint';
+        fechaHint.innerText = '📅 Ajustado automáticamente al próximo sábado.';
+      }
       
       actualizarInterfazEstado();
       actualizarVistaPrevia();
@@ -240,17 +293,21 @@ function validarFechaSabado(mostrarAlerta = true) {
     return false;
   }
 
-  fechaHint.className = 'field-hint';
-  fechaHint.innerText = '📅 Fecha válida: sábado.';
+  if (fechaHint) {
+    fechaHint.className = 'field-hint';
+    fechaHint.innerText = '📅 Fecha válida: sábado.';
+  }
   return true;
 }
 
-inputFecha.addEventListener('change', () => {
-  validarFechaSabado(true);
-  actualizarInterfazEstado();
-  guardarDatos();
-  actualizarVistaPrevia();
-});
+if (inputFecha) {
+  inputFecha.addEventListener('change', () => {
+    validarFechaSabado(true);
+    actualizarInterfazEstado();
+    guardarDatos();
+    actualizarVistaPrevia();
+  });
+}
 
 function obtenerFechaFormateada() {
   const valor = inputFecha.value;
@@ -266,12 +323,13 @@ function obtenerFechaFormateada() {
 }
 
 /* =========================================================
-   DATOS
+   DATOS Y PERSISTENCIA
 ========================================================= */
 
 function obtenerDatos() {
   const datos = {};
-  camposRequeridos.forEach(input => {
+  const inputs = form.querySelectorAll('input');
+  inputs.forEach(input => {
     datos[input.id] = input.value.trim();
   });
   return datos;
@@ -302,8 +360,13 @@ function cargarDatos() {
   }
 }
 
+function obtenerValor(id) {
+  const input = document.getElementById(id);
+  return input ? input.value.trim() : '';
+}
+
 /* =========================================================
-   INTERFAZ
+   INTERFAZ DE USUARIO
 ========================================================= */
 
 function actualizarInterfazEstado() {
@@ -338,38 +401,39 @@ function actualizarInterfazEstado() {
 
   const todo = completos === camposRequeridos.length;
 
-  btnExportar.disabled = !todo;
-  btnWhatsapp.disabled = !todo;
-  btnMobileShare.disabled = !todo;
+  if (btnExportar) btnExportar.disabled = !todo;
+  if (btnWhatsapp) btnWhatsapp.disabled = !todo;
+  if (btnMobileShare) btnMobileShare.disabled = !todo;
 
-  previewEmpty.style.display = completos === 0 ? 'flex' : 'none';
-  previewStatus.innerText = todo ? '✓ Lista' : `${Math.round((completos / camposRequeridos.length) * 100)}% completado`;
+  if (previewEmpty) previewEmpty.style.display = completos === 0 ? 'flex' : 'none';
+  if (previewStatus) previewStatus.innerText = todo ? '✓ Lista' : `${Math.round((completos / camposRequeridos.length) * 100)}% completado`;
 }
 
-form.addEventListener('focusin', event => {
-  if (event.target.matches('input[required]')) {
-    event.target.classList.remove('st-incomplete', 'st-complete');
-    event.target.classList.add('st-focus');
-  }
-});
+if (form) {
+  form.addEventListener('focusin', event => {
+    if (event.target.matches('input[required]')) {
+      event.target.classList.remove('st-incomplete', 'st-complete');
+      event.target.classList.add('st-focus');
+    }
+  });
 
-form.addEventListener('focusout', event => {
-  if (event.target.matches('input[required]')) {
+  form.addEventListener('focusout', event => {
+    if (event.target.matches('input[required]')) {
+      actualizarInterfazEstado();
+    }
+  });
+
+  let renderTimeout;
+  form.addEventListener('input', event => {
+    if (event.target === inputFecha) return;
+
     actualizarInterfazEstado();
-  }
-});
+    guardarDatos();
 
-let renderTimeout;
-
-form.addEventListener('input', event => {
-  if (event.target === inputFecha) return;
-
-  actualizarInterfazEstado();
-  guardarDatos();
-
-  clearTimeout(renderTimeout);
-  renderTimeout = setTimeout(actualizarVistaPrevia, 50);
-});
+    clearTimeout(renderTimeout);
+    renderTimeout = setTimeout(actualizarVistaPrevia, 50);
+  });
+}
 
 /* =========================================================
    RENDERIZADO CANVAS
@@ -435,6 +499,51 @@ function dibujarTextoInteligente(texto, configuracion, opciones = {}) {
   ctx.textAlign = 'left';
 }
 
+function dibujarAcompanantesDinamicos() {
+  const listaAcompanantes = [];
+  
+  // Recoger los 5 campos posibles de acompañantes
+  for (let i = 1; i <= 5; i++) {
+    const valor = obtenerValor(`acompanante${i}`);
+    if (valor) {
+      listaAcompanantes.push(valor);
+    }
+  }
+
+  const cantidad = listaAcompanantes.length;
+  if (cantidad < 2) return;
+
+  const modo = Math.min(Math.max(cantidad, 2), 5);
+  const mapaModo = DISTRIBUCION_ROLES[modo];
+
+  listaAcompanantes.forEach((nombre, index) => {
+    const numAcompanante = index + 1;
+    const rolesAsignados = mapaModo[numAcompanante];
+
+    // 1. Dibujar en los roles del programa central
+    if (rolesAsignados) {
+      rolesAsignados.forEach(claveRol => {
+        const coord = ROLES_COORDS[claveRol];
+        if (coord) {
+          dibujarTextoInteligente(
+            nombre,
+            { x: coord.x, y: coord.y, fontSize: 40, weight: 'bold', color: '#0f172a', align: 'left' },
+            { maxWidth: canvas.width * 0.42 }
+          );
+        }
+      });
+    }
+
+    // 2. Dibujar en la lista inferior de la plataforma (Acompañantes 1 al 5)
+    const claveLista = `acompanante${numAcompanante}`;
+    if (diseno[claveLista]) {
+      dibujarTextoInteligente(nombre, diseno[claveLista], {
+        maxWidth: canvas.width * 0.55
+      });
+    }
+  });
+}
+
 function dibujarTodosLosTextos() {
   const fecha = obtenerFechaFormateada();
 
@@ -481,8 +590,8 @@ function dibujarTodosLosTextos() {
     { maxWidth: canvas.width * 0.25 }
   );
 
-  dibujarAcompanante('acompanante1', diseno.acompanante1);
-  dibujarAcompanante('acompanante2', diseno.acompanante2);
+  // Mapeo dinámico e inteligente de roles y lista inferior (2 a 5 acompañantes)
+  dibujarAcompanantesDinamicos();
 
   dibujarTextoInteligente(
     obtenerValor('familiaOracion'),
@@ -501,40 +610,6 @@ function dibujarTodosLosTextos() {
     diseno.mensajeMusical,
     { maxWidth: canvas.width * 0.42 }
   );
-}
-
-function dibujarAcompanante(id, config) {
-  const texto = obtenerValor(id);
-  if (!texto) return;
-
-  const puntos = [
-    { x: config.x, y: config.y },
-    { x: config.x2, y: config.y2 },
-    { x: config.x3, y: config.y3 },
-    { x: config.x4, y: config.y4 },
-    { x: config.x5, y: config.y5 },
-    { x: config.x6, y: config.y6 }
-  ];
-
-  puntos.forEach((punto, index) => {
-    if (punto.x === undefined || punto.y === undefined) return;
-
-    dibujarTextoInteligente(
-      texto,
-      {
-        ...config,
-        x: punto.x,
-        y: punto.y,
-        fontSize: index === 0 ? 44 : 40
-      },
-      { maxWidth: canvas.width * 0.55 }
-    );
-  });
-}
-
-function obtenerValor(id) {
-  const input = document.getElementById(id);
-  return input ? input.value.trim() : '';
 }
 
 /* =========================================================
@@ -664,13 +739,11 @@ function generarMensaje() {
   return mensaje;
 }
 
-
-
 function validarAntesDeExportar() {
   const todo = camposRequeridos.every(input => input.value.trim() !== '');
 
   if (!todo) {
-    mostrarToast('⚠️ Completa todos los campos.');
+    mostrarToast('⚠️ Completa todos los campos requeridos.');
     return false;
   }
 
@@ -686,11 +759,13 @@ function validarAntesDeExportar() {
 ========================================================= */
 
 function abrirConfirmacionLimpiar() {
-  document.getElementById('confirmModal').classList.add('active');
+  const modal = document.getElementById('confirmModal');
+  if (modal) modal.classList.add('active');
 }
 
 function cerrarConfirmacionLimpiar() {
-  document.getElementById('confirmModal').classList.remove('active');
+  const modal = document.getElementById('confirmModal');
+  if (modal) modal.classList.remove('active');
 }
 
 function limpiarFormulario() {
@@ -716,10 +791,15 @@ function limpiarFormulario() {
   mostrarToast('🗑️ Formulario limpio');
 }
 
-document.getElementById('btnLimpiar').onclick = abrirConfirmacionLimpiar;
-document.getElementById('btnMobileClear').onclick = abrirConfirmacionLimpiar;
-document.getElementById('btnCancelClear').onclick = cerrarConfirmacionLimpiar;
-document.getElementById('btnConfirmClear').onclick = limpiarFormulario;
+const btnLimpiar = document.getElementById('btnLimpiar');
+const btnMobileClear = document.getElementById('btnMobileClear');
+const btnCancelClear = document.getElementById('btnCancelClear');
+const btnConfirmClear = document.getElementById('btnConfirmClear');
+
+if (btnLimpiar) btnLimpiar.onclick = abrirConfirmacionLimpiar;
+if (btnMobileClear) btnMobileClear.onclick = abrirConfirmacionLimpiar;
+if (btnCancelClear) btnCancelClear.onclick = cerrarConfirmacionLimpiar;
+if (btnConfirmClear) btnConfirmClear.onclick = limpiarFormulario;
 
 /* =========================================================
    TEMA
@@ -753,6 +833,7 @@ let toastTimeout;
 
 function mostrarToast(mensaje) {
   const container = document.getElementById('toastContainer');
+  if (!container) return;
   container.innerHTML = '';
 
   const toast = document.createElement('div');
@@ -768,12 +849,12 @@ function mostrarToast(mensaje) {
 }
 
 /* =========================================================
-   EVENTOS BOTONES PRINCIPALES
+   EVENTOS DE BOTONES Y TECLADO
 ========================================================= */
 
-btnExportar.onclick = exportarJPG;
-btnWhatsapp.onclick = enviarWhatsApp;
-btnMobileShare.onclick = enviarWhatsApp;
+if (btnExportar) btnExportar.onclick = exportarJPG;
+if (btnWhatsapp) btnWhatsapp.onclick = enviarWhatsApp;
+if (btnMobileShare) btnMobileShare.onclick = enviarWhatsApp;
 
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape') {
@@ -782,7 +863,7 @@ document.addEventListener('keydown', event => {
 });
 
 /* =========================================================
-   INICIALIZACIÓN
+   INICIALIZACIÓN GLOBAL
 ========================================================= */
 
 inicializarTema();
