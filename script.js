@@ -171,7 +171,7 @@ const DISENO_DEFAULT = {
   },
   acompanante2: {
     x: 600,
-    y: 3104,
+    y: 3107,
     fontSize: 40,
     weight: 'bold',
     color: '#0f172a',
@@ -179,7 +179,7 @@ const DISENO_DEFAULT = {
   },
   acompanante3: {
     x: 600,
-    y: 3158,
+    y: 3164,
     fontSize: 40,
     weight: 'bold',
     color: '#0f172a',
@@ -187,7 +187,7 @@ const DISENO_DEFAULT = {
   },
   acompanante4: {
     x: 600,
-    y: 3212,
+    y: 3221,
     fontSize: 40,
     weight: 'bold',
     color: '#0f172a',
@@ -195,7 +195,7 @@ const DISENO_DEFAULT = {
   },
   acompanante5: {
     x: 600,
-    y: 3266,
+    y: 3278,
     fontSize: 40,
     weight: 'bold',
     color: '#0f172a',
