@@ -4,30 +4,23 @@
 
 const CONFIG = {
   PLANTILLA_PRINCIPAL: 'plantilla.webp',
-  PLANTILLA_FALLBACK: 'CULTO DE.png',
   STORAGE_DATOS: 'liturgiaDataV2',
-  STORAGE_DISENO: 'liturgiaDesignV2',
   STORAGE_TEMA: 'liturgiaTheme',
-  DIA_PERMITIDO: 6,
-  MOVIMIENTO: 5
+  DIA_PERMITIDO: 6
 };
-
 
 // ==========================================
 // CONFIGURACIÓN DE VERSIÓN GLOBAL
 // ==========================================
-const CONFIG_VERSION = "2.2"; // <-- ¡Solo cambias la versión aquí en adelante!
+const CONFIG_VERSION = "2.2";
 
 function aplicarVersionGlobal() {
-  // Buscamos todos los elementos que tengan el id o clase de versión
   const elementosVersion = document.querySelectorAll('#app-version, #app-version-footer');
-  
   elementosVersion.forEach(el => {
     el.textContent = `v${CONFIG_VERSION}`;
   });
 }
 
-// Ejecutar al cargar la página
 document.addEventListener('DOMContentLoaded', () => {
   aplicarVersionGlobal();
 });
@@ -39,47 +32,39 @@ document.addEventListener('DOMContentLoaded', () => {
 const canvas = document.getElementById('canvasLiturgia');
 const ctx = canvas.getContext('2d');
 const form = document.getElementById('liturgiaForm');
-const progressBar = document.getElementById('progressBar');
-const progressText = document.getElementById('progressText');
 const btnExportar = document.getElementById('btnExportar');
 const btnWhatsapp = document.getElementById('btnWhatsapp');
 const btnMobileShare = document.getElementById('btnMobileShare');
 const previewEmpty = document.getElementById('previewEmpty');
 const previewStatus = document.getElementById('previewStatus');
+const previewLoading = document.getElementById('previewLoading');
 const inputFecha = document.getElementById('fecha');
 const fechaHint = document.getElementById('fechaHint');
 const camposRequeridos = Array.from(
   document.querySelectorAll('#liturgiaForm input[required]')
 );
-const designerPanel = document.getElementById('designerPanel');
-const designerBtn = document.getElementById('btnDesigner');
-const designerPreviewBtn = document.getElementById('btnDesignerPreview');
 
 /* =========================================================
-   VERIFICACIÓN DE MODO ADMINISTRADOR (?admin=true)
+   PLANTILLA CON CONTROL DE CARGA
 ========================================================= */
-
-const urlParams = new URLSearchParams(window.location.search);
-const isAdmin = urlParams.get('admin') === 'true';
-
-/* =========================================================
-   PLANTILLA
-========================================================= */
-
 const plantilla = new Image();
 let plantillaCargada = false;
 
 plantilla.onload = () => {
   plantillaCargada = true;
-  // Forzamos al canvas a tomar las medidas exactas de la nueva plantilla WebP
   canvas.width = plantilla.naturalWidth;
   canvas.height = plantilla.naturalHeight;
+  
+  // Ocultar pantalla de carga
+  if (previewLoading) previewLoading.style.display = 'none';
+
   actualizarVistaPrevia();
-  actualizarInterfazEstado(); // Para asegurar que los botones se habiliten si todo está lleno
+  actualizarInterfazEstado();
 };
 
 plantilla.onerror = () => {
   plantillaCargada = false;
+  if (previewLoading) previewLoading.style.display = 'none';
   mostrarToast('⚠️ No se pudo cargar "plantilla.webp". Verifica el nombre.');
   dibujarErrorPlantilla();
 };
@@ -193,45 +178,10 @@ const DISENO_DEFAULT = {
   }
 };
 
-let diseno = cargarDiseno();
+let diseno = DISENO_DEFAULT;
 
 /* =========================================================
-   UTILIDADES
-========================================================= */
-
-function clonarObjeto(obj) {
-  return JSON.parse(JSON.stringify(obj));
-}
-
-function cargarDiseno() {
-  try {
-    const guardado = localStorage.getItem(CONFIG.STORAGE_DISENO);
-    if (guardado) {
-      const datos = JSON.parse(guardado);
-      return fusionarDiseno(clonarObjeto(DISENO_DEFAULT), datos);
-    }
-  } catch (error) {
-    console.warn('No se pudo cargar el diseño', error);
-  }
-  return clonarObjeto(DISENO_DEFAULT);
-}
-
-function fusionarDiseno(base, cambios) {
-  Object.keys(cambios || {}).forEach(id => {
-    if (base[id] && cambios[id]) {
-      Object.assign(base[id], cambios[id]);
-    }
-  });
-  return base;
-}
-
-function guardarDiseno() {
-  localStorage.setItem(CONFIG.STORAGE_DISENO, JSON.stringify(diseno));
-  mostrarToast('💾 Diseño guardado');
-}
-
-/* =========================================================
-   UTILIDADES Y MANEJO DE FECHA (OPTIMIZADO PARA IOS / IPHONE)
+   UTILIDADES Y MANEJO DE FECHA
 ========================================================= */
 
 function formatearFechaISO(fecha) {
@@ -271,13 +221,10 @@ function validarFechaSabado(mostrarAlerta = true) {
       mostrarToast('⚠️ Solo se permiten días sábados.');
     }
 
-    // Activar clase de error visual
     inputFecha.classList.add('st-error-flash');
-    
     fechaHint.className = 'field-hint error';
     fechaHint.innerText = '⚠️ Día no permitido. Debe ser sábado.';
 
-    // Retardar ligeramente la corrección automática para que el usuario note el error en el input
     setTimeout(() => {
       const proximo = obtenerProximoSabado();
       inputFecha.value = formatearFechaISO(proximo);
@@ -304,10 +251,6 @@ inputFecha.addEventListener('change', () => {
   guardarDatos();
   actualizarVistaPrevia();
 });
-
-/* =========================================================
-   FORMATO DE FECHA PARA EL CANVAS
-========================================================= */
 
 function obtenerFechaFormateada() {
   const valor = inputFecha.value;
@@ -336,10 +279,7 @@ function obtenerDatos() {
 
 function guardarDatos() {
   try {
-    localStorage.setItem(
-      CONFIG.STORAGE_DATOS,
-      JSON.stringify(obtenerDatos())
-    );
+    localStorage.setItem(CONFIG.STORAGE_DATOS, JSON.stringify(obtenerDatos()));
   } catch (error) {
     console.warn('No se pudieron guardar los datos.', error);
   }
@@ -376,12 +316,10 @@ function actualizarInterfazEstado() {
 
     if (lleno) {
       completos++;
-
       if (document.activeElement !== input) {
         input.classList.remove('st-incomplete', 'st-focus');
         input.classList.add('st-complete');
       }
-
       if (badge) {
         badge.className = 'input-badge badge-check';
         badge.innerText = '✓';
@@ -391,7 +329,6 @@ function actualizarInterfazEstado() {
         input.classList.remove('st-complete', 'st-focus');
         input.classList.add('st-incomplete');
       }
-
       if (badge) {
         badge.className = 'input-badge badge-required';
         badge.innerText = 'Requerido';
@@ -399,31 +336,15 @@ function actualizarInterfazEstado() {
     }
   });
 
-  const porcentaje = Math.round(
-    (completos / camposRequeridos.length) * 100
-  );
-
-  progressBar.style.width = porcentaje + '%';
-  progressText.innerText = porcentaje + '%';
-
   const todo = completos === camposRequeridos.length;
-
-  progressBar.style.backgroundColor = todo
-    ? 'var(--success)'
-    : 'var(--secondary)';
 
   btnExportar.disabled = !todo;
   btnWhatsapp.disabled = !todo;
   btnMobileShare.disabled = !todo;
 
   previewEmpty.style.display = completos === 0 ? 'flex' : 'none';
-
-  previewStatus.innerText = todo ? '✓ Lista' : `${porcentaje}% completado`;
+  previewStatus.innerText = todo ? '✓ Lista' : `${Math.round((completos / camposRequeridos.length) * 100)}% completado`;
 }
-
-/* =========================================================
-   INPUTS
-========================================================= */
 
 form.addEventListener('focusin', event => {
   if (event.target.matches('input[required]')) {
@@ -477,18 +398,10 @@ function dibujarErrorPlantilla() {
   ctx.fillStyle = '#64748b';
   ctx.textAlign = 'center';
   ctx.font = 'bold 24px Arial';
-  ctx.fillText(
-    '⚠️ Plantilla no disponible',
-    canvas.width / 2,
-    canvas.height / 2
-  );
+  ctx.fillText('⚠️ Plantilla no disponible', canvas.width / 2, canvas.height / 2);
 
   ctx.textAlign = 'left';
 }
-
-/* =========================================================
-   TEXTO INTELIGENTE
-========================================================= */
 
 function calcularFuenteQueCabe(texto, maxWidth, fuenteBase) {
   let tamaño = fuenteBase;
@@ -625,7 +538,7 @@ function obtenerValor(id) {
 }
 
 /* =========================================================
-   EXPORTACIÓN JPG
+   EXPORTACIÓN JPG Y COMPARTIR
 ========================================================= */
 
 function obtenerNombreArchivo() {
@@ -638,7 +551,6 @@ function exportarJPG() {
 
   actualizarVistaPrevia();
 
-  // Aseguramos que el canvas tenga la dimensión correcta antes de exportar
   if (canvas.width === 0 || canvas.height === 0) {
     mostrarToast('❌ Error: El lienzo no está listo.');
     return;
@@ -666,13 +578,9 @@ function exportarJPG() {
       mostrarToast('🖼️ Imagen generada correctamente');
     },
     'image/jpeg',
-    0.95 // Puedes ajustar la calidad ligeramente (0.90 - 0.98) para evitar problemas de memoria en móviles
+    0.95
   );
 }
-
-/* =========================================================
-   COMPARTIR
-========================================================= */
 
 async function enviarWhatsApp() {
   if (!validarAntesDeExportar()) return;
@@ -734,66 +642,32 @@ function abrirWhatsApp(mensaje) {
   window.open(url, '_blank');
 }
 
-/* =========================================================
-   MENSAJE WHATSAPP
-========================================================= */
-
 function generarMensaje() {
   let mensaje = '📜 *LITURGIA DEL CULTO*\n\n';
   const fecha = obtenerFechaFormateada();
 
-  if (fecha) {
-    mensaje += `📅 *Fecha:* ${fecha}\n`;
-  }
+  if (fecha) mensaje += `📅 *Fecha:* ${fecha}\n`;
 
   const predicador = obtenerValor('predicador');
-  if (predicador) {
-    mensaje += `🎙️ *Predicador:* ${predicador}\n`;
-  }
+  if (predicador) mensaje += `🎙️ *Predicador:* ${predicador}\n`;
 
   const lectura = obtenerValor('lectura');
-  if (lectura) {
-    mensaje += `📖 *Lectura:* ${lectura}\n`;
-  }
+  if (lectura) mensaje += `📖 *Lectura:* ${lectura}\n`;
 
   const himnoInicial = obtenerValor('himnoInicial');
-  if (himnoInicial) {
-    mensaje += `🎵 *Himno inicial:* ${himnoInicial}\n`;
-  }
+  if (himnoInicial) mensaje += `🎵 *Himno inicial:* ${himnoInicial}\n`;
 
   const himnoFinal = obtenerValor('himnoFinal');
-  if (himnoFinal) {
-    mensaje += `🎵 *Himno final:* ${himnoFinal}\n`;
-  }
+  if (himnoFinal) mensaje += `🎵 *Himno final:* ${himnoFinal}\n`;
 
   mensaje += '\n📝 _Se adjunta la imagen con la programación completa._';
-
   return mensaje;
 }
 
-/* =========================================================
-   COPIAR TEXTO
-========================================================= */
 
-async function copiarTexto() {
-  const mensaje = generarMensaje();
-
-  try {
-    await navigator.clipboard.writeText(mensaje);
-    mostrarToast('📜 Texto copiado');
-  } catch (error) {
-    mostrarToast('⚠️ No se pudo copiar automáticamente.');
-  }
-}
-
-/* =========================================================
-   VALIDACIÓN EXPORTACIÓN
-========================================================= */
 
 function validarAntesDeExportar() {
-  const todo = camposRequeridos.every(
-    input => input.value.trim() !== ''
-  );
+  const todo = camposRequeridos.every(input => input.value.trim() !== '');
 
   if (!todo) {
     mostrarToast('⚠️ Completa todos los campos.');
@@ -805,110 +679,6 @@ function validarAntesDeExportar() {
   }
 
   return true;
-}
-
-/* =========================================================
-   DISEÑADOR (SOLO ADMIN)
-========================================================= */
-
-function abrirDiseñador() {
-  if (!isAdmin) return;
-
-  if (designerPanel) {
-    designerPanel.classList.toggle('active');
-
-    if (designerPanel.classList.contains('active')) {
-      cargarControlesDiseño();
-    }
-  }
-}
-
-function cargarControlesDiseño() {
-  const fieldSelect = document.getElementById('designerField');
-  if (!fieldSelect) return;
-
-  const id = fieldSelect.value;
-  const config = diseno[id];
-
-  if (!config) return;
-
-  document.getElementById('designX').value = config.x ?? 0;
-  document.getElementById('designY').value = config.y ?? 0;
-  document.getElementById('designFontSize').value = config.fontSize ?? 20;
-  document.getElementById('designAlign').value = config.align || 'left';
-}
-
-function aplicarControlesDiseño() {
-  const fieldSelect = document.getElementById('designerField');
-  if (!fieldSelect) return;
-
-  const id = fieldSelect.value;
-  const config = diseno[id];
-
-  if (!config) return;
-
-  config.x = Number(document.getElementById('designX').value) || 0;
-  config.y = Number(document.getElementById('designY').value) || 0;
-  config.fontSize = Number(document.getElementById('designFontSize').value) || 20;
-  config.align = document.getElementById('designAlign').value;
-
-  actualizarVistaPrevia();
-}
-
-if (isAdmin) {
-  const designerField = document.getElementById('designerField');
-  if (designerField) {
-    designerField.addEventListener('change', cargarControlesDiseño);
-  }
-
-  ['designX', 'designY', 'designFontSize', 'designAlign'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener('input', aplicarControlesDiseño);
-    }
-  });
-
-  const btnMoveUp = document.getElementById('btnMoveUp');
-  const btnMoveDown = document.getElementById('btnMoveDown');
-  const btnMoveLeft = document.getElementById('btnMoveLeft');
-  const btnMoveRight = document.getElementById('btnMoveRight');
-  const btnSaveDesign = document.getElementById('btnSaveDesign');
-  const btnResetDesign = document.getElementById('btnResetDesign');
-
-  if (btnMoveUp) btnMoveUp.onclick = () => moverElemento(0, -CONFIG.MOVIMIENTO);
-  if (btnMoveDown) btnMoveDown.onclick = () => moverElemento(0, CONFIG.MOVIMIENTO);
-  if (btnMoveLeft) btnMoveLeft.onclick = () => moverElemento(-CONFIG.MOVIMIENTO, 0);
-  if (btnMoveRight) btnMoveRight.onclick = () => moverElemento(CONFIG.MOVIMIENTO, 0);
-  if (btnSaveDesign) btnSaveDesign.onclick = guardarDiseno;
-
-  if (btnResetDesign) {
-    btnResetDesign.onclick = () => {
-      if (!confirm('¿Restablecer todas las posiciones originales?')) {
-        return;
-      }
-
-      diseno = clonarObjeto(DISENO_DEFAULT);
-      cargarControlesDiseño();
-      actualizarVistaPrevia();
-      guardarDiseno();
-    };
-  }
-}
-
-function moverElemento(dx, dy) {
-  const fieldSelect = document.getElementById('designerField');
-  if (!fieldSelect) return;
-
-  const id = fieldSelect.value;
-  const config = diseno[id];
-
-  if (!config) return;
-
-  config.x = (config.x || 0) + dx;
-  config.y = (config.y || 0) + dy;
-
-  cargarControlesDiseño();
-  actualizarVistaPrevia();
 }
 
 /* =========================================================
@@ -926,14 +696,13 @@ function cerrarConfirmacionLimpiar() {
 function limpiarFormulario() {
   const campos = form.querySelectorAll('input, select, textarea');
   
-  // Recorremos los campos aplicando el efecto en cascada
   campos.forEach((campo, index) => {
     setTimeout(() => {
       campo.classList.add('st-clear-flash');
       setTimeout(() => {
         campo.classList.remove('st-clear-flash');
-      }, 450); // Sincronizado con la duración de la animación CSS
-    }, index * 45); // 45ms de retraso por cada campo sucesivo
+      }, 450);
+    }, index * 45);
   });
 
   form.reset();
@@ -951,8 +720,9 @@ document.getElementById('btnLimpiar').onclick = abrirConfirmacionLimpiar;
 document.getElementById('btnMobileClear').onclick = abrirConfirmacionLimpiar;
 document.getElementById('btnCancelClear').onclick = cerrarConfirmacionLimpiar;
 document.getElementById('btnConfirmClear').onclick = limpiarFormulario;
+
 /* =========================================================
-   TEMA (SOPORTE BOTÓN ANIMADO .theme-toggle)
+   TEMA
 ========================================================= */
 
 function inicializarTema() {
@@ -964,13 +734,12 @@ function inicializarTema() {
     document.body.classList.add('dark');
   }
 
-  const themeToggleBtn = document.getElementById('theme-toggle') || document.getElementById('btnTheme');
+  const themeToggleBtn = document.getElementById('theme-toggle');
 
   if (themeToggleBtn) {
     themeToggleBtn.addEventListener('click', () => {
       document.body.classList.toggle('dark');
       const esOscuro = document.body.classList.contains('dark');
-      
       localStorage.setItem(CONFIG.STORAGE_TEMA, esOscuro ? 'dark' : 'light');
     });
   }
@@ -999,35 +768,12 @@ function mostrarToast(mensaje) {
 }
 
 /* =========================================================
-   EVENTOS BOTONES PRINCIPALES Y ACTIVACIÓN MODO ADMIN
+   EVENTOS BOTONES PRINCIPALES
 ========================================================= */
 
 btnExportar.onclick = exportarJPG;
 btnWhatsapp.onclick = enviarWhatsApp;
 btnMobileShare.onclick = enviarWhatsApp;
-
-document.getElementById('btnCopiar').onclick = copiarTexto;
-
-// Mostrar botones del diseñador solo en modo Administrador (?admin=true)
-document.addEventListener('DOMContentLoaded', () => {
-  if (isAdmin) {
-    if (designerBtn) {
-      designerBtn.style.display = 'inline-flex';
-      designerBtn.onclick = abrirDiseñador;
-    }
-    if (designerPreviewBtn) {
-      designerPreviewBtn.style.display = 'inline-flex';
-      designerPreviewBtn.onclick = abrirDiseñador;
-    }
-  } else {
-    if (designerBtn) designerBtn.style.display = 'none';
-    if (designerPreviewBtn) designerPreviewBtn.style.display = 'none';
-  }
-});
-
-/* =========================================================
-   ATAJOS DE TECLADO
-========================================================= */
 
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape') {
