@@ -263,7 +263,7 @@
                 id="himnoInicial"
                 list="listaHimnos"
                 maxlength="60"
-                placeholder="Ej. 222 - Castillo Fuerte"
+                placeholder="Ej. 222 -Del trono celestial"
                 autocomplete="off"
                 required>
 
@@ -285,7 +285,7 @@
                 id="himnoFinal"
                 list="listaHimnos"
                 maxlength="60"
-                placeholder="Ej. 333 - Aunque en esta vida"
+                placeholder="Ej. 333 -Aunque en esta vida"
                 autocomplete="off"
                 required>
 
@@ -955,46 +955,62 @@
           </div>
         </div>
 
-        <!-- ACOMPAÑANTE 3 -->
-        <div class="field-group">
-          <label for="acompanante3">
-            <span>👤 Acompañante 3</span>
-          </label>
-          <div class="input-wrapper">
-            <input
-              type="text"
-              id="acompanante3"
-              maxlength="60"
-              placeholder="Ej: Hno. Pedro Pérez (Opcional)">
-          </div>
+        <!-- BOTÓN PARA MOSTRAR/OCULTAR MÁS ACOMPAÑANTES -->
+        <div style="margin-bottom: 12px;">
+          <button
+            type="button"
+            id="btnToggleAcompanantes"
+            class="btn-secondary"
+            style="width: 100%;">
+            ➕ Agregar más acompañantes (Opcional)
+          </button>
         </div>
 
-        <!-- ACOMPAÑANTE 4 -->
-        <div class="field-group">
-          <label for="acompanante4">
-            <span>👤 Acompañante 4</span>
-          </label>
-          <div class="input-wrapper">
-            <input
-              type="text"
-              id="acompanante4"
-              maxlength="60"
-              placeholder="Ej: Hna. Rosa Gómez (Opcional)">
+        <!-- CONTENEDOR OCULTO PARA ACOMPAÑANTES 3, 4 Y 5 -->
+        <div id="extraAcompanantes" class="extra-acompanantes-hidden">
+          
+          <!-- ACOMPAÑANTE 3 -->
+          <div class="field-group">
+            <label for="acompanante3">
+              <span>👤 Acompañante 3</span>
+            </label>
+            <div class="input-wrapper">
+              <input
+                type="text"
+                id="acompanante3"
+                maxlength="60"
+                placeholder="Ej: Hno. Pedro Pérez (Opcional)">
+            </div>
           </div>
-        </div>
 
-        <!-- ACOMPAÑANTE 5 -->
-        <div class="field-group">
-          <label for="acompanante5">
-            <span>👤 Acompañante 5</span>
-          </label>
-          <div class="input-wrapper">
-            <input
-              type="text"
-              id="acompanante5"
-              maxlength="60"
-              placeholder="Ej: Hno. Luis Torres (Opcional)">
+          <!-- ACOMPAÑANTE 4 -->
+          <div class="field-group">
+            <label for="acompanante4">
+              <span>👤 Acompañante 4</span>
+            </label>
+            <div class="input-wrapper">
+              <input
+                type="text"
+                id="acompanante4"
+                maxlength="60"
+                placeholder="Ej: Hna. Rosa Gómez (Opcional)">
+            </div>
           </div>
+
+          <!-- ACOMPAÑANTE 5 -->
+          <div class="field-group">
+            <label for="acompanante5">
+              <span>👤 Acompañante 5</span>
+            </label>
+            <div class="input-wrapper">
+              <input
+                type="text"
+                id="acompanante5"
+                maxlength="60"
+                placeholder="Ej: Hno. Luis Torres (Opcional)">
+            </div>
+          </div>
+
         </div>
 
         <!-- FAMILIA -->

@@ -74,7 +74,6 @@ button {
 /* =========================================================
    CONTENEDOR PRINCIPAL
 ========================================================= */
-
 .main-container {
   display: grid;
   grid-template-columns: minmax(400px, 580px) minmax(400px, 520px);
@@ -251,6 +250,13 @@ body.dark .icon-moon {
   margin: 22px 0 14px;
   border-left: 4px solid var(--primary);
 }
+.section-title {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.section-title:hover {
+  transform: translateX(4px);
+}
 
 body.dark .section-title {
   color: #60a5fa;
@@ -318,15 +324,20 @@ input[type="date"] {
   padding: 0 75px 0 11px;
   font-size: 14px;
   outline: none;
-  transition: 0.2s;
+  
+  /* Transición suave para todos los cambios */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   -webkit-appearance: none;
   appearance: none;
 }
 
+/* Efecto visual destacado al hacer clic y escribir en el campo */
 input:focus {
   border-color: var(--focus);
-  box-shadow: 0 0 0 3px var(--focus-glow);
+  box-shadow: 0 0 0 4px var(--focus-glow), 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px); /* El campo se eleva ligeramente hacia arriba */
 }
+
 
 input.st-incomplete {
   border-color: var(--warning);
@@ -504,7 +515,7 @@ body.dark .preview-empty {
 }
 
 /* =========================================================
-   TOAST
+   TOAST (AVISOS FLOTANTES CON REBOTE)
 ========================================================= */
 
 .toast-container {
@@ -519,23 +530,33 @@ body.dark .preview-empty {
 .toast {
   background: #0f172a;
   color: white;
-  padding: 11px 16px;
-  border-radius: 10px;
-  font-size: 12px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 13px;
   font-weight: 700;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-  animation: toastIn 0.25s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   white-space: nowrap;
+  
+  /* Animación de rebote al aparecer */
+  animation: toastBounce 0.45s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
 
-@keyframes toastIn {
-  from {
+@keyframes toastBounce {
+  0% {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(35px) scale(0.7);
   }
-  to {
+  60% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(-8px) scale(1.05); /* Salto de rebote hacia arriba */
+  }
+  80% {
+    transform: translateY(3px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1); /* Posición final firme */
   }
 }
 
@@ -609,7 +630,7 @@ body.dark .preview-empty {
       );
 
     background: rgba(255, 255, 255, 0.94);
-    backdrop-filter: blur(14px);
+    backdrop-filter: blur(3px);
     border-top: 1px solid var(--border);
   }
 
@@ -638,7 +659,7 @@ body.dark .preview-empty {
   .form-card,
   .preview-card {
     padding: 15px;
-    border-radius: 12px;
+    border-radius: 20px;
   }
   .app-title {
     gap: 9px;
@@ -680,17 +701,18 @@ body.dark .preview-empty {
     bottom: 0;
     z-index: 1000;
     padding: 9px 10px calc(9px + env(safe-area-inset-bottom));
-    background: rgba(255,255,255,0.94);
-    backdrop-filter: blur(14px);
+    background: rgba(255,255,255,0);
+    backdrop-filter: blur(3px);
     border-top: 1px solid var(--border);
   }
   body.dark .mobile-actions {
-    background: rgba(30,41,59,0.94);
+    background: rgba(30,41,59,0);
   }
   .mobile-actions button {
     min-height: 38px;  /* Reducido de 48px a 38px */
     font-size: 12px;   /* Texto ligeramente más compacto */
     padding: 6px 10px; /* Relleno interno reducido */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35); /* Sombra suave flotante */
   }
 }
 
@@ -770,5 +792,84 @@ body.dark .preview-loading {
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   ACOMPAÑANTES EXTRA DESPLEGABLES
+========================================================= */
+.extra-acompanantes-hidden {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-8px); /* Ligeramente desplazado hacia arriba */
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+              opacity 0.3s ease-out, 
+              transform 0.3s ease-out;
+  pointer-events: none;
+}
+
+.extra-acompanantes-hidden.show {
+  max-height: 600px;
+  opacity: 1;
+  transform: translateY(0); /* Desciende a su posición natural */
+  pointer-events: auto;
+}
+
+/* =======================================================
+respuesta visual más atractiva al usuario cuando termina de rellenar todos los campos obligatorios 
+===========================================================*/
+.btn-whatsapp:not(:disabled) {
+  animation: pulsoSuave 1.5s infinite ease-in-out;
+}
+
+@keyframes pulsoSuave {
+  0% { 
+    transform: scale(1); 
+    box-shadow: 0 0 0 rgba(37, 211, 102, 0);
+  }
+  50% { 
+    transform: scale(1.04); /* Un poquito más de escala para que se note al instante */
+    filter: brightness(1.1);   /* Más brillo */
+    box-shadow: 0 0 15px rgba(37, 211, 102, 0.6); /* Un resplandor verde llamativo */
+  }
+  100% { 
+    transform: scale(1); 
+    box-shadow: 0 0 0 rgba(37, 211, 102, 0);
+  }
+}
+
+/* Si el input tiene contenido, se pone un borde sutilmente más destacado */
+input.has-content {
+  border-color: #3b82f6 !important; /* Borde azul destacado cuando tiene contenido */
+}
+
+
+/*
+Efecto "Ripple" (Ondulación al presionar) en los botones principales
+A los botones de acción (como el de "Compartir en WhatsApp" o los selectores) les puedes dar un efecto visual al hacer clic, simulando el estilo de los botones de Android (Material Design) o iOS:
+*/
+/* Contenedor del botón necesario para contener la onda */
+button {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transform: translateZ(0); /* Mejora la renderización en móviles */
+}
+
+/* El círculo de la onda que se expande */
+.ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4); /* Color de la onda (translúcido) */
+  transform: scale(0);
+  animation: rippleAnim 0.6s linear;
+  pointer-events: none;
+}
+
+@keyframes rippleAnim {
+  to {
+    transform: scale(4);
+    opacity: 0;
   }
 }

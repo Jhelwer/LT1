@@ -871,3 +871,84 @@ cargarDatos();
 inicializarCampoFecha();
 actualizarInterfazEstado();
 actualizarVistaPrevia();
+
+/* =========================================================
+   CONTROL DE ACOMPAÑANTES EXTRA DESPLEGABLES
+========================================================= */
+const btnToggleAcompanantes = document.getElementById('btnToggleAcompanantes');
+const extraAcompanantes = document.getElementById('extraAcompanantes');
+
+function configurarDesplegableAcompanantes() {
+  if (!btnToggleAcompanantes || !extraAcompanantes) return;
+
+  // Si ya tienen datos guardados al cargar la página, abrirlos automáticamente
+  const tieneDatosExtra = ['acompanante3', 'acompanante4', 'acompanante5'].some(id => {
+    const input = document.getElementById(id);
+    return input && input.value.trim() !== '';
+  });
+
+  if (tieneDatosExtra) {
+    extraAcompanantes.classList.add('show');
+    btnToggleAcompanantes.innerHTML = '➖ Ocultar acompañantes extras';
+  }
+
+  btnToggleAcompanantes.addEventListener('click', () => {
+    const estaAbierto = extraAcompanantes.classList.toggle('show');
+    if (estaAbierto) {
+      btnToggleAcompanantes.innerHTML = '➖ Ocultar acompañantes extras';
+    } else {
+      btnToggleAcompanantes.innerHTML = '➕ Agregar más acompañantes (Opcional)';
+    }
+  });
+}
+
+// Ejecutar al iniciar
+document.addEventListener('DOMContentLoaded', () => {
+  configurarDesplegableAcompanantes();
+});
+
+
+// Añade una clase a los inputs que tienen texto escrito
+document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"]').forEach(input => {
+    // Verificar al cargar por si ya tienen texto guardado
+    if (input.value.trim() !== '') input.classList.add('has-content');
+
+    // Escuchar cuando el usuario escribe
+    input.addEventListener('input', () => {
+        if (input.value.trim() !== '') {
+            input.classList.add('has-content');
+        } else {
+            input.classList.remove('has-content');
+        }
+    });
+});
+
+
+// Efecto Ripple para todos los botones
+document.querySelectorAll('button').forEach(button => {
+    button.addEventListener('click', function (e) {
+        // Evitar duplicados si ya existe una onda
+        const existingRipple = this.querySelector('.ripple-effect');
+        if (existingRipple) {
+            existingRipple.remove();
+        }
+
+        const circle = document.createElement('span');
+        const diameter = Math.max(this.clientWidth, this.clientHeight);
+        const radius = diameter / 2;
+
+        // Calcular posición exacta del toque/clic dentro del botón
+        const rect = this.getBoundingClientRect();
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${e.clientX - rect.left - radius}px`;
+        circle.style.top = `${e.clientY - rect.top - radius}px`;
+        circle.classList.add('ripple-effect');
+
+        this.appendChild(circle);
+
+        // Eliminar el elemento después de que termine la animación
+        setTimeout(() => {
+            circle.remove();
+        }, 600);
+    });
+});
